@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "name": "PDF Markdown Notes",
+  "version": "1.1.0",
+  "description": "Xem PDF trong trình duyệt và ghi chú Markdown theo chương hoặc khoảng trang. Dữ liệu lưu cục bộ, có thể đồng bộ ra file .md thật.",
+  "minimum_chrome_version": "110",
+  "permissions": ["storage", "webNavigation", "contextMenus"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "src/background/sw.js",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "src/popup/popup.html",
+    "default_title": "PDF Markdown Notes",
+    "default_icon": {
+      "16": "assets/icon16.png",
+      "32": "assets/icon32.png",
+      "48": "assets/icon48.png",
+      "128": "assets/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "assets/icon16.png",
+    "32": "assets/icon32.png",
+    "48": "assets/icon48.png",
+    "128": "assets/icon128.png"
+  },
+  "options_page": "src/options/options.html",
+  "web_accessible_resources": [
+    {
+      "resources": ["vendor/pdfjs/web/viewer.html"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
+}

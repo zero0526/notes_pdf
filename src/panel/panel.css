@@ -1,0 +1,742 @@
+/**
+ * Giao diện Note Panel (UI design mục 3, 2.1, 2.2).
+ * Nạp sau viewer.css của PDF.js nên có thể ghi đè bố cục khung xem PDF.
+ */
+
+:root {
+  --pdfmd-panel-width: 380px;
+  --pdfmd-bg: #1f1f23;
+  --pdfmd-bg-elevated: #2a2a30;
+  --pdfmd-fg: #e8e8ea;
+  --pdfmd-fg-muted: #9aa0b0;
+  --pdfmd-border: #444444;
+  --pdfmd-accent: #4da3ff;
+  --pdfmd-success: #4ade80;
+  --pdfmd-warning: #ffb454;
+  --pdfmd-danger: #ff5470;
+  --pdfmd-chapter: #2dd4bf;
+  --pdfmd-radius: 4px;
+  --pdfmd-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* ---------------------------------------------------------------- *
+ * Bố cục: thu hẹp vùng PDF để panel không che nội dung (FR-02.1)
+ * ---------------------------------------------------------------- */
+
+body.pdfmd-enabled #outerContainer {
+  width: calc(100% - var(--pdfmd-panel-width));
+}
+
+body.pdfmd-panel-hidden #outerContainer {
+  width: 100%;
+}
+
+/* ---------------------------------------------------------------- *
+ * Panel
+ * ---------------------------------------------------------------- */
+
+#pdfmd-root {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  pointer-events: none;
+  font-family: system-ui, "Be Vietnam Pro", "Segoe UI", sans-serif;
+  font-size: 13px;
+  color: var(--pdfmd-fg);
+}
+
+#pdfmd-root * {
+  box-sizing: border-box;
+}
+
+.pdfmd-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: var(--pdfmd-panel-width);
+  display: flex;
+  flex-direction: column;
+  background: var(--pdfmd-bg);
+  border-left: 1px solid var(--pdfmd-border);
+  pointer-events: auto;
+  transition: transform 200ms var(--pdfmd-ease);
+}
+
+body.pdfmd-panel-hidden .pdfmd-panel {
+  transform: translateX(100%);
+}
+
+/* Tay cầm kéo đổi chiều rộng panel (cạnh trái) */
+.pdfmd-resizer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -4px;
+  width: 8px;
+  cursor: col-resize;
+  touch-action: none;
+  z-index: 2;
+}
+
+.pdfmd-resizer::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 3px;
+  width: 2px;
+  height: 36px;
+  transform: translateY(-50%);
+  border-radius: 2px;
+  background: var(--pdfmd-accent);
+  opacity: 0;
+  transition: opacity 160ms var(--pdfmd-ease);
+}
+
+.pdfmd-resizer:hover::after,
+.pdfmd-resizer:focus-visible::after,
+body.pdfmd-resizing .pdfmd-resizer::after {
+  opacity: 1;
+}
+
+.pdfmd-resizer:focus-visible {
+  outline: none;
+}
+
+body.pdfmd-panel-hidden .pdfmd-resizer {
+  pointer-events: none;
+}
+
+body.pdfmd-resizing {
+  user-select: none;
+  cursor: col-resize;
+}
+
+body.pdfmd-resizing .pdfmd-panel {
+  transition: none;
+}
+
+.pdfmd-header {
+  height: 44px;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 10px;
+  border-bottom: 1px solid var(--pdfmd-border);
+}
+
+.pdfmd-title {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.pdfmd-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pdfmd-btn {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--pdfmd-fg);
+  background: var(--pdfmd-bg-elevated);
+  border: 1px solid var(--pdfmd-border);
+  border-radius: var(--pdfmd-radius);
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: background 160ms var(--pdfmd-ease), border-color 160ms var(--pdfmd-ease);
+}
+
+.pdfmd-btn:hover:not(:disabled) {
+  border-color: var(--pdfmd-accent);
+}
+
+.pdfmd-btn:focus-visible {
+  outline: 2px solid var(--pdfmd-accent);
+  outline-offset: 1px;
+}
+
+.pdfmd-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.pdfmd-btn-icon {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  line-height: 1;
+  font-size: 16px;
+}
+
+.pdfmd-btn-primary {
+  border-color: var(--pdfmd-accent);
+  color: var(--pdfmd-accent);
+}
+
+.pdfmd-btn-danger {
+  border-color: var(--pdfmd-danger);
+  color: var(--pdfmd-danger);
+}
+
+/* ------------------------------ Banner ------------------------------ */
+
+.pdfmd-banners {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.pdfmd-banners:empty {
+  display: none;
+}
+
+.pdfmd-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  font-size: 12px;
+  line-height: 1.4;
+  border-bottom: 1px solid var(--pdfmd-border);
+  animation: pdfmd-slide-in 180ms var(--pdfmd-ease);
+}
+
+.pdfmd-banner.is-warn {
+  background: rgba(255, 180, 84, 0.12);
+  color: var(--pdfmd-warning);
+}
+
+.pdfmd-banner.is-error {
+  background: rgba(255, 84, 112, 0.14);
+  color: var(--pdfmd-danger);
+}
+
+.pdfmd-banner.is-info {
+  background: rgba(74, 163, 255, 0.1);
+  color: var(--pdfmd-accent);
+}
+
+.pdfmd-banner-text {
+  flex: 1 1 auto;
+}
+
+.pdfmd-banner .pdfmd-btn {
+  flex: 0 0 auto;
+  padding: 2px 8px;
+  font-size: 12px;
+}
+
+@keyframes pdfmd-slide-in {
+  from {
+    transform: translateY(-6px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ---------------------------- Thông tin đơn vị ------------------------ */
+
+.pdfmd-unit {
+  flex: 0 0 auto;
+  padding: 10px 10px 6px;
+}
+
+.pdfmd-range-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.pdfmd-chapter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--pdfmd-fg-muted);
+  min-width: 0;
+}
+
+.pdfmd-chapter > span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pdfmd-dot {
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--pdfmd-chapter);
+}
+
+.pdfmd-chip {
+  margin-top: 8px;
+  padding: 3px 10px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--pdfmd-accent);
+  background: var(--pdfmd-bg-elevated);
+  border: 1px solid var(--pdfmd-border);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.pdfmd-chip:hover {
+  border-color: var(--pdfmd-accent);
+}
+
+/* -------------------------------- Tabs ------------------------------- */
+
+.pdfmd-tabs {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 4px;
+  padding: 0 10px;
+  border-bottom: 1px solid var(--pdfmd-border);
+}
+
+.pdfmd-tab {
+  position: relative;
+  padding: 7px 10px;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--pdfmd-fg-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.pdfmd-tab.is-active {
+  color: var(--pdfmd-fg);
+}
+
+.pdfmd-tab.is-active::after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: -1px;
+  height: 2px;
+  background: var(--pdfmd-accent);
+}
+
+/* ------------------------------- Vùng soạn --------------------------- */
+
+.pdfmd-body {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+}
+
+.pdfmd-editor {
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+  padding: 12px;
+  resize: none;
+  border: none;
+  outline: none;
+  background: var(--pdfmd-bg-elevated);
+  color: var(--pdfmd-fg);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.pdfmd-editor::placeholder {
+  color: #6d7280;
+}
+
+.pdfmd-preview {
+  flex: 1 1 auto;
+  overflow: auto;
+  padding: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.pdfmd-preview h1,
+.pdfmd-preview h2,
+.pdfmd-preview h3,
+.pdfmd-preview h4 {
+  margin: 12px 0 6px;
+  line-height: 1.3;
+}
+
+.pdfmd-preview p,
+.pdfmd-preview ul,
+.pdfmd-preview ol,
+.pdfmd-preview table {
+  margin: 0 0 10px;
+}
+
+.pdfmd-preview ul,
+.pdfmd-preview ol {
+  padding-left: 22px;
+}
+
+.pdfmd-preview blockquote {
+  margin: 0 0 10px;
+  padding: 2px 10px;
+  border-left: 3px solid var(--pdfmd-border);
+  color: var(--pdfmd-fg-muted);
+}
+
+.pdfmd-preview code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+  background: #191922;
+  border-radius: 3px;
+  padding: 1px 4px;
+}
+
+.pdfmd-preview pre {
+  background: #191922;
+  border-radius: var(--pdfmd-radius);
+  padding: 10px;
+  overflow: auto;
+}
+
+.pdfmd-preview pre code {
+  background: none;
+  padding: 0;
+}
+
+.pdfmd-preview table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.pdfmd-preview th,
+.pdfmd-preview td {
+  border: 1px solid var(--pdfmd-border);
+  padding: 4px 8px;
+  text-align: left;
+}
+
+.pdfmd-preview a {
+  color: var(--pdfmd-accent);
+}
+
+.pdfmd-preview .pdfmd-blocked-image,
+.pdfmd-preview .pdfmd-task {
+  display: inline-block;
+  padding: 0 6px;
+  border-radius: 3px;
+  background: var(--pdfmd-bg-elevated);
+  color: var(--pdfmd-fg-muted);
+  font-size: 12px;
+}
+
+.pdfmd-preview .pdfmd-link-blocked {
+  color: var(--pdfmd-fg-muted);
+  text-decoration: line-through;
+}
+
+.pdfmd-preview-empty {
+  color: var(--pdfmd-fg-muted);
+}
+
+.pdfmd-waiting {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--pdfmd-bg);
+  color: var(--pdfmd-fg-muted);
+  font-size: 13px;
+}
+
+.pdfmd-spinner {
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--pdfmd-border);
+  border-top-color: var(--pdfmd-accent);
+  border-radius: 50%;
+  animation: pdfmd-spin 900ms linear infinite;
+}
+
+@keyframes pdfmd-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ------------------------------- Footer ------------------------------ */
+
+.pdfmd-footer {
+  flex: 0 0 auto;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 10px;
+  border-top: 1px solid var(--pdfmd-border);
+  font-size: 12px;
+  color: var(--pdfmd-fg-muted);
+}
+
+.pdfmd-status[data-state="saved"] {
+  color: var(--pdfmd-success);
+}
+
+.pdfmd-status[data-state="saving"] {
+  color: var(--pdfmd-warning);
+}
+
+.pdfmd-status[data-state="degraded"] {
+  color: var(--pdfmd-danger);
+}
+
+.pdfmd-mirror[data-state="ok"] {
+  color: var(--pdfmd-success);
+}
+
+.pdfmd-mirror[data-state="needs-grant"],
+.pdfmd-mirror[data-state="denied"],
+.pdfmd-mirror[data-state="paused"],
+.pdfmd-mirror[data-state="conflict"] {
+  color: var(--pdfmd-warning);
+}
+
+.pdfmd-mirror[data-state="error"],
+.pdfmd-mirror[data-state="broken"] {
+  color: var(--pdfmd-danger);
+}
+
+/* ----------------------------- Nút nổi ------------------------------- */
+
+.pdfmd-floating {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--pdfmd-border);
+  background: var(--pdfmd-bg-elevated);
+  color: var(--pdfmd-fg);
+  font-size: 18px;
+  cursor: pointer;
+  pointer-events: auto;
+  z-index: 1000000;
+}
+
+.pdfmd-floating:focus-visible {
+  outline: 2px solid var(--pdfmd-accent);
+}
+
+/* -------------------------- Modal & menu ----------------------------- */
+
+.pdfmd-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  z-index: 1000001;
+}
+
+.pdfmd-modal {
+  width: 360px;
+  max-width: calc(100vw - 32px);
+  background: var(--pdfmd-bg);
+  border: 1px solid var(--pdfmd-border);
+  border-radius: 12px;
+  box-shadow: 0 14px 44px rgba(0, 0, 0, 0.5);
+  padding: 16px;
+}
+
+.pdfmd-modal-title {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.pdfmd-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: var(--pdfmd-fg-muted);
+}
+
+.pdfmd-field input,
+.pdfmd-menu-field input {
+  padding: 6px 8px;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--pdfmd-fg);
+  background: var(--pdfmd-bg-elevated);
+  border: 1px solid var(--pdfmd-border);
+  border-radius: var(--pdfmd-radius);
+}
+
+.pdfmd-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.pdfmd-conflict-list {
+  margin: 8px 0 0;
+  padding-left: 20px;
+  font-size: 12px;
+  color: var(--pdfmd-fg-muted);
+}
+
+.pdfmd-menu {
+  position: fixed;
+  right: 12px;
+  top: 120px;
+  width: 220px;
+  padding: 6px;
+  background: var(--pdfmd-bg);
+  border: 1px solid var(--pdfmd-border);
+  border-radius: 8px;
+  box-shadow: 0 14px 44px rgba(0, 0, 0, 0.5);
+  pointer-events: auto;
+  z-index: 1000001;
+}
+
+.pdfmd-menu-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 6px 8px;
+  border: none;
+  border-radius: var(--pdfmd-radius);
+  background: none;
+  color: var(--pdfmd-fg);
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.pdfmd-menu-item:hover:not(:disabled) {
+  background: var(--pdfmd-bg-elevated);
+}
+
+.pdfmd-menu-item:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.pdfmd-menu-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.pdfmd-menu-desc {
+  display: block;
+  font-size: 11px;
+  color: var(--pdfmd-fg-muted);
+}
+
+.pdfmd-menu-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--pdfmd-fg-muted);
+}
+
+.pdfmd-menu-field input {
+  width: 64px;
+}
+
+/* ------------------------------ Toast -------------------------------- */
+
+.pdfmd-toasts {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+  z-index: 1000002;
+}
+
+.pdfmd-toast {
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--pdfmd-fg);
+  background: var(--pdfmd-bg-elevated);
+  border: 1px solid var(--pdfmd-border);
+  border-radius: 8px;
+  animation: pdfmd-toast-in 240ms var(--pdfmd-ease);
+}
+
+@keyframes pdfmd-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --------------------------- Lỗi chết ------------------------------- */
+
+.pdfmd-fatal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  background: rgba(31, 31, 35, 0.92);
+  color: var(--pdfmd-fg);
+  font-family: system-ui, sans-serif;
+  font-size: 14px;
+  z-index: 1000003;
+}
+
+/* ------------------------- Cửa sổ hẹp ------------------------------- */
+
+@media (max-width: 900px) {
+  body.pdfmd-enabled #outerContainer {
+    width: 100%;
+  }
+
+  .pdfmd-panel {
+    width: min(86vw, var(--pdfmd-panel-width));
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.45);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pdfmd-panel,
+  .pdfmd-banner,
+  .pdfmd-toast,
+  .pdfmd-spinner {
+    animation: none;
+    transition: none;
+  }
+}

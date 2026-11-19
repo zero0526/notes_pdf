@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cài đặt — PDF Markdown Notes</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main class="page">
+      <h1 class="page-title">Cài đặt PDF Markdown Notes</h1>
+
+      <section class="block">
+        <h2 class="block-title">Lưu trữ thư mục (.md)</h2>
+        <p class="block-desc">
+          Ghi chú được lưu trong trình duyệt (IndexedDB) và đồng bộ ra file .md thật trong thư mục bạn chọn.
+        </p>
+        <div class="row">
+          <button type="button" class="btn btn-primary" id="choose-dir">Chọn thư mục lưu trữ</button>
+          <span class="status" id="dir-status">Chưa chọn thư mục</span>
+        </div>
+        <div class="row">
+          <button type="button" class="btn" id="grant-dir" hidden>Cấp quyền thư mục</button>
+          <button type="button" class="btn" id="export-all">Xuất tất cả .md</button>
+          <button type="button" class="btn" id="copy-new-dir">Sao chép sang thư mục mới</button>
+          <button type="button" class="btn" id="download-md">Tải .md</button>
+        </div>
+        <p class="hint" id="fs-hint"></p>
+      </section>
+
+      <section class="block">
+        <h2 class="block-title">Ghi chú</h2>
+        <div class="row">
+          <label class="field">
+            <span>Chunk mặc định toàn cục</span>
+            <input type="number" id="global-chunk" min="1" max="100" value="1" disabled />
+            <em class="tag">v1.2</em>
+          </label>
+          <label class="field">
+            <span>Cỡ chữ editor</span>
+            <input type="number" id="editor-font-size" min="11" max="18" value="13" />
+            <em>px</em>
+          </label>
+          <label class="field">
+            <span>Chiều rộng panel</span>
+            <input type="number" id="panel-width" min="280" max="720" step="10" value="380" />
+            <em>px (280–720)</em>
+          </label>
+        </div>
+      </section>
+
+      <section class="block">
+        <h2 class="block-title">Hành vi</h2>
+        <div class="row">
+          <label class="checkbox">
+            <input type="checkbox" id="auto-redirect" checked />
+            <span>Tự động mở PDF bằng tiện ích</span>
+          </label>
+          <label class="checkbox">
+            <input type="checkbox" id="mirror-enabled" checked />
+            <span>Đồng bộ file .md</span>
+          </label>
+        </div>
+      </section>
+
+      <section class="block">
+        <h2 class="block-title">Giới hạn &amp; trợ giúp</h2>
+        <ul class="limits">
+          <li>Quyền thư mục có thể phải cấp lại sau mỗi phiên trình duyệt (chọn “Allow on every visit” nếu Chrome hỏi).</li>
+          <li>Cửa sổ ẩn danh không lưu bền — ghi chú sẽ mất khi đóng phiên.</li>
+          <li>Nhiều tab cùng mở một PDF sẽ ghi đè theo bản sau cùng (last-write-wins).</li>
+          <li>URL có tham số token phiên đã được bỏ qua khi định danh bộ ghi chú; tham số lạ chưa biết sẽ tạo bộ ghi chú mới.</li>
+          <li>Dữ liệu chỉ nằm trên máy của bạn — tiện ích không gửi ghi chú ra mạng.</li>
+        </ul>
+      </section>
+    </main>
+
+    <script type="module" src="options.js"></script>
+  </body>
+</html>

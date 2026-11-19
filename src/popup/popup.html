@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <title>PDF Markdown Notes</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header class="popup-header">
+      <h1 id="app-title">PDF Markdown Notes</h1>
+      <span class="popup-version" id="app-version"></span>
+    </header>
+
+    <section class="popup-section">
+      <label class="popup-toggle">
+        <input type="checkbox" id="auto-redirect" checked />
+        <span id="toggle-label">Tự động mở PDF bằng tiện ích</span>
+      </label>
+    </section>
+
+    <section class="popup-section popup-card">
+      <div class="popup-card-title" id="dir-label">Thư mục .md</div>
+      <div class="popup-card-row">
+        <span class="popup-dot" id="dir-dot"></span>
+        <span class="popup-dir-name" id="dir-name">Chưa chọn</span>
+        <span class="popup-perm" id="dir-perm"></span>
+      </div>
+      <button type="button" class="popup-btn" id="open-storage">Mở cài đặt lưu trữ</button>
+    </section>
+
+    <section class="popup-section">
+      <div class="popup-key-label">Khoá PDF hiện tại</div>
+      <div class="popup-key" id="current-key" title=""></div>
+    </section>
+
+    <footer class="popup-footer">
+      <button type="button" class="popup-link" id="open-options">Giới hạn &amp; trợ giúp</button>
+    </footer>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

@@ -1,0 +1,153 @@
+:root {
+  --bg: #1f1f23;
+  --fg: #e8e8ea;
+  --muted: #9aa0b0;
+  --elevated: #2a2a30;
+  --border: #444444;
+  --accent: #4da3ff;
+  --success: #4ade80;
+  --warning: #ffb454;
+  --danger: #ff5470;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  width: 320px;
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: system-ui, "Be Vietnam Pro", "Segoe UI", sans-serif;
+  font-size: 13px;
+}
+
+.popup-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 12px 14px 8px;
+}
+
+.popup-header h1 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.popup-version {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.popup-section {
+  padding: 8px 14px;
+}
+
+.popup-card {
+  margin: 4px 10px 10px;
+  padding: 10px;
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.popup-card-title {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.popup-card-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.popup-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--muted);
+  flex: 0 0 auto;
+}
+
+.popup-dot.is-ready {
+  background: var(--success);
+}
+
+.popup-dot.is-grant {
+  background: var(--warning);
+}
+
+.popup-dot.is-denied {
+  background: var(--danger);
+}
+
+.popup-dir-name {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.popup-perm {
+  font-size: 11px;
+  color: var(--muted);
+  flex: 0 0 auto;
+}
+
+.popup-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.popup-btn {
+  width: 100%;
+  padding: 6px 10px;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.popup-btn:hover {
+  border-color: var(--accent);
+}
+
+.popup-key-label {
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+
+.popup-key {
+  font-size: 11px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.popup-footer {
+  padding: 8px 14px 12px;
+  border-top: 1px solid var(--border);
+}
+
+.popup-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--accent);
+  cursor: pointer;
+}
